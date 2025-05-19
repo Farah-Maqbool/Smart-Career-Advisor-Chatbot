@@ -19,9 +19,17 @@ if query:
         context = "\n\n".join(context_chunks)
 
         prompt = f"""
-You are a professional career advisor. Use the context provided below to answer the user's question clearly and helpfully.
+You are a professional career advisor.
 
-If the context is not sufficient to fully answer the question, use your own knowledge to provide the best possible advice.
+Use the context provided below to help answer the user's question clearly and helpfully.
+
+If the user mentions a career role (like Data Scientist, UX Designer, etc.), 
+search for relevant jobs or internship opportunities online and include direct links.
+
+Return your answer in this format:
+1. A clear, short career suggestion or answer.
+2. A list of job or internship links (if found).
+
 
 Context:{context}
 Question:{query}
