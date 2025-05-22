@@ -39,3 +39,4 @@ answer:
         response = model.generate_content(prompt)
         st.success("Answer:")
         st.write(response.text)
+
