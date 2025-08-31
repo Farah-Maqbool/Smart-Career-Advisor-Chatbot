@@ -1,8 +1,12 @@
 import streamlit as st
 from backend import retrieve_chunks
 import google.generativeai as ai
+import os
+from dotenv import load_dotenv
 
-ai.configure(api_key="AIzaSyAYnk8L9S2ahnE0GXggVMEOcRMUJHHsQkI")
+# Load the .env file
+load_dotenv()
+ai.configure(api_key=os.getenv("API_Key"))
 config = {
             "temperature": 0.5,
             "response_mime_type": "text/plain"
