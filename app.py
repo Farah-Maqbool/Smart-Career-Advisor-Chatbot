@@ -3,9 +3,14 @@ from backend import retrieve_chunks
 import google.generativeai as ai
 import streamlit as st
 import google.generativeai as ai
+import os
+from dotenv import load_dotenv
 
-# Get API key from Streamlit secrets
-ai.configure(api_key=st.secrets["API_Key"])
+# Load .env for local development
+load_dotenv()
+
+# Try secrets first, then fallback to .env
+api_key = st.secrets.get("API_Key", os.getenv("API_Key"))
 
 
 config = {
