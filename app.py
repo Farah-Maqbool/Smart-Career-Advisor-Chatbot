@@ -9,9 +9,7 @@ load_dotenv()
 
 # Get API key
 api_key = os.getenv("API_KEY")
-if not api_key:
-    st.error("API_KEY not found. Please add it to your .env or Streamlit secrets.")
-    st.stop()
+
 
 # Configure Gemini API
 genai.configure(api_key=api_key)
