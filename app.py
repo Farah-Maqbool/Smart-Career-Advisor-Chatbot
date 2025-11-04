@@ -1,8 +1,6 @@
 import streamlit as st
 from backend import retrieve_chunks
 import google.generativeai as ai
-import streamlit as st
-import google.generativeai as ai
 import os
 from dotenv import load_dotenv
 
@@ -10,8 +8,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Try secrets first, then fallback to .env
-api_key = st.secrets.get("API_Key", os.getenv("API_Key"))
+api_key = os.getenv("API_KEY")
 
+ai.configure(api_key=api_key)
 
 config = {
             "temperature": 0.5,
