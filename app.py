@@ -1,29 +1,40 @@
 import streamlit as st
 from backend import retrieve_chunks
-import google.generativeai as ai
+import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 
 # Load .env for local development
 load_dotenv()
 
-# Try secrets first, then fallback to .env
+# Get API key
 api_key = os.getenv("API_KEY")
+if not api_key:
+    st.error("API_KEY not found. Please add it to your .env or Streamlit secrets.")
+    st.stop()
 
-ai.configure(api_key=api_key)
+# Configure Gemini API
+genai.configure(api_key=api_key)
 
+# --- Select the correct working model ---
+MODEL_NAME = "models/gemini-2.5-flash"  # ✅ Available in your account
+
+# Optional config
 config = {
-            "temperature": 0.5,
-            "response_mime_type": "text/plain"
-        }
-model = ai.GenerativeModel('gemini-2.5-flash-preview-04-17',generation_config=config)
+    "temperature": 0.5,
+    "response_mime_type": "text/plain"
+}
 
-st.title("Smart Career Advisor Chatbot")
+# Initialize model
+model = genai.GenerativeModel(MODEL_NAME, generation_config=config)
 
-query = st.text_input("Enter your question")
+# Streamlit UI
+st.title("💼 Smart Career Advisor Chatbot")
+
+query = st.text_input("🔍 Ask your career-related question:")
 
 if query:
-    with st.spinner("Searching..."):
+    with st.spinner("🔎 Analyzing your query and searching for relevant insights..."):
         context_chunks = retrieve_chunks(query)
         context = "\n\n".join(context_chunks)
 
@@ -32,20 +43,25 @@ You are a professional career advisor.
 
 Use the context provided below to help answer the user's question clearly and helpfully.
 
-If the user mentions a career role (like Data Scientist, UX Designer, etc.), 
-search for relevant jobs or internship opportunities online and include direct links.
+If the user mentions a career role (like Data Scientist, UX Designer, etc.),
+suggest relevant career paths or internship opportunities.
 
 Return your answer in this format:
 1. A clear, short career suggestion or answer.
-2. A list of job or internship links (if found).
+2. A list of job or internship links (if relevant).
 
+Context:
+{context}
 
-Context:{context}
-Question:{query}
-answer:
+Question:
+{query}
+
+Answer:
 """
 
-        response = model.generate_content(prompt)
-        st.success("Answer:")
-        st.write(response.text)
-
+        try:
+            response = model.generate_content(prompt)
+            st.success("✅ Answer:")
+            st.write(response.text)
+        except Exception as e:
+            st.error(f"⚠️ Error: {e}")
